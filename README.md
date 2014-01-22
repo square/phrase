@@ -8,6 +8,8 @@ CharSequence formatted = Phrase.from("Hi {first_name}, you are {age} years old."
   .format();
 ```
 
+Read more about it in this [blog post](http://corner.squareup.com/2014/01/phrase.html).
+
 Download
 --------
 
