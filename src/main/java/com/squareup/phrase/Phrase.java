@@ -81,8 +81,26 @@ public final class Phrase {
    *
    * @throws IllegalArgumentException if pattern contains any syntax errors.
    */
+  public static Phrase from(Fragment f, int patternResourceId, int quantity) {
+    return from(f.getResources(), patternResourceId, quantity);
+  }
+
+  /**
+   * Entry point into this API.
+   *
+   * @throws IllegalArgumentException if pattern contains any syntax errors.
+   */
   public static Phrase from(View v, int patternResourceId) {
     return from(v.getResources(), patternResourceId);
+  }
+
+  /**
+   * Entry point into this API.
+   *
+   * @throws IllegalArgumentException if pattern contains any syntax errors.
+   */
+  public static Phrase from(View v, int patternResourceId, int quantity) {
+    return from(v.getResources(), patternResourceId, quantity);
   }
 
   /**
@@ -99,8 +117,26 @@ public final class Phrase {
    *
    * @throws IllegalArgumentException if pattern contains any syntax errors.
    */
+  public static Phrase from(Context c, int patternResourceId, int quantity) {
+    return from(c.getResources(), patternResourceId, quantity);
+  }
+
+  /**
+   * Entry point into this API.
+   *
+   * @throws IllegalArgumentException if pattern contains any syntax errors.
+   */
   public static Phrase from(Resources r, int patternResourceId) {
     return from(r.getText(patternResourceId));
+  }
+
+  /**
+   * Entry point into this API.
+   *
+   * @throws IllegalArgumentException if pattern contains any syntax errors.
+   */
+  public static Phrase from(Resources r, int patternResourceId, int quantity) {
+    return from(r.getQuantityString(patternResourceId, quantity));
   }
 
   /**
