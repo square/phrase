@@ -173,10 +173,8 @@ public final class Phrase {
 
       // Copy the original pattern to preserve all spans, such as bold, italic, etc.
       SpannableStringBuilder sb = new SpannableStringBuilder(pattern);
-      Token t = head;
-      while (t != null) {
+      for (Token t = head; t != null; t = t.next) {
         t.expand(sb, keysToValues);
-        t = t.next;
       }
 
       formatted = sb;
