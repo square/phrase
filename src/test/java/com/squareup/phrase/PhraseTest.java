@@ -17,18 +17,21 @@ package com.squareup.phrase;
 
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static com.squareup.phrase.Phrase.from;
 import static org.fest.assertions.api.Assertions.assertThat;
-import static org.fest.assertions.api.Assertions.fail;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class PhraseTest {
+  @Rule
+  public ExpectedException thrown = ExpectedException.none();
 
   @Test public void emptyStringFormatsToItself() {
     assertThat(from("").format().toString()).isEqualTo("");
@@ -43,20 +46,16 @@ public class PhraseTest {
   }
 
   @Test public void puttingNullValueThrowsException() {
-    try {
-      from("hi {name}").put("name", null);
-      fail("Expected IllegalArgumentException");
-    } catch (IllegalArgumentException e) {
-      assertThat(e).hasMessage("Null value for 'name'");
-    }
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("Null value for 'name'");
+    from("hi {name}").put("name", null);
   }
 
   @Test public void singleCurlyBraceIsAMistake() {
-    try {
-      from("{");
-      fail("Expected IllegalArgumentException");
-    } catch (IllegalArgumentException e) {
-    }
+    char eof = 0;
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("Unexpected character '"+eof+"'; expected key.");
+    from("{");
   }
 
   @Test public void twoLeftCurlyBracesFormatAsSingleCurlyBrace() {
@@ -68,11 +67,9 @@ public class PhraseTest {
   }
 
   @Test public void loneCurlyBraceIsAMistake() {
-    try {
-      from("hi { {age}.");
-      fail("Expected IllegalArgumentException");
-    } catch (IllegalArgumentException e) {
-    }
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("Unexpected character ' '; expected key.");
+    from("hi { {age}.");
   }
 
   @Test public void ignoresTokenNextToEscapedBrace() {
@@ -112,35 +109,27 @@ public class PhraseTest {
 
   @Test
   public void formatFailsFastWhenKeysAreMissing() {
-    try {
-      gender.format();
-      fail("Expected IllegalArgumentException");
-    } catch (IllegalArgumentException e) {
-    }
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("Missing keys: [gender]");
+    gender.format();
   }
 
   @Test public void putFailsFastWhenPuttingUnknownKey() {
-    try {
-      gender.put("bogusKey", "whatever");
-      fail("Expected IllegalArgumentException");
-    } catch (IllegalArgumentException e) {
-    }
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("Invalid key: bogusKey");
+    gender.put("bogusKey", "whatever");
   }
 
   @Test public void emptyTokenFailsFast() {
-    try {
-      from("illegal {} pattern");
-      fail("Expected IllegalArgumentException");
-    } catch (IllegalArgumentException e) {
-    }
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("Unexpected character '}'; expected key.");
+    from("illegal {} pattern");
   }
 
   @Test public void illegalTokenCharactersFailFast() {
-    try {
-      from("blah {NoUppercaseAllowed}");
-      fail("Expected IllegalArgumentException");
-    } catch (IllegalArgumentException e) {
-    }
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("Unexpected character 'N'; expected key.");
+    from("blah {NoUppercaseAllowed}");
   }
 
   @Test public void tokensCanHaveUnderscores() {
@@ -149,11 +138,9 @@ public class PhraseTest {
   }
 
   @Test public void keysCannotStartWithUnderscore() {
-    try {
-      from("{_foo}");
-      fail("Expected IllegalArgumentException");
-    } catch (IllegalArgumentException e) {
-    }
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("Unexpected character '_'; expected key.");
+    from("{_foo}");
   }
 
   @Test public void testRetainsSpans() {
