@@ -1,3 +1,10 @@
+# Gradle
+.gradle
+gradlew.bat
+build
+local.properties
+reports
+
 # Maven
 target
 pom.xml.*
