@@ -1,0 +1,82 @@
+import com.android.builder.core.BuilderConstants;
+
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'com.android.tools.build:gradle:1.0.0'
+    classpath 'com.github.jcandksolutions.gradle:android-unit-test:2.1.1'
+  }
+}
+dependencies {
+  repositories {
+    mavenCentral()
+  }
+}
+
+group = GROUP
+version = VERSION_NAME
+
+apply plugin: 'com.android.library'
+apply plugin: 'maven'
+
+android {
+  compileSdkVersion 21
+  buildToolsVersion '21.1.2'
+
+  defaultConfig {
+    minSdkVersion 11
+    versionName VERSION_NAME
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_7
+    targetCompatibility JavaVersion.VERSION_1_7
+  }
+}
+
+apply plugin: 'android-unit-test'
+
+dependencies {
+  testCompile 'junit:junit:4.10'
+  testCompile 'org.mockito:mockito-core:1.9.5'
+  testCompile 'org.easytesting:fest-assert-core:2.0M10'
+  testCompile 'org.robolectric:robolectric:2.2'
+}
+
+android.libraryVariants.all { variant ->
+  def name = variant.buildType.name
+  if (!BuilderConstants.DEBUG.equals(name)) {
+    def task = project.tasks.create "jar${name.capitalize()}", Jar
+    task.dependsOn variant.javaCompile
+    task.from variant.javaCompile.destinationDir
+    artifacts.add('archives', task);
+  }
+}
+
+apply plugin: 'checkstyle'
+checkstyle {
+  configFile file('checkstyle.xml')
+  ignoreFailures true
+  showViolations false
+  configProperties = [
+      'checkstyle.suppressions.file': file('checkstyle-suppressions.xml'),
+  ]
+}
+
+// Applying the checkstyle plugin adds multiple tasks but not
+// one for checkstylin' against android sources. This task
+// belows does the trick.
+task checkstyle(type: Checkstyle) {
+  configFile file('checkstyle.xml')
+  source 'src/main/java'
+  ignoreFailures false
+  showViolations true
+  include '**/*.java'
+  exclude '**/gen/**'
+
+  classpath = files()
+}
+
+apply from: 'gradle-mvn-push.gradle'
