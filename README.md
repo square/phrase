@@ -8,6 +8,27 @@ CharSequence formatted = Phrase.from("Hi {first_name}, you are {age} years old."
   .format();
 ```
 
+Comma-separated lists:
+```
+CharSequence formattedList = ListPhrase.from(", ")
+  .format(1, 2, 3);
+// returns "1, 2, 3"
+```
+
+English sentence-style lists:
+```
+ListPhrase listFormatter = ListPhrase.from(
+  " and ",
+  ", ",
+  ", and ");
+
+listFormatter.format(Arrays.asList(1, 2));
+// returns "1 and 2"
+
+listFormatter.format(Arrays.asList(1, 2, 3));
+// returns "1, 2, and 3"
+```
+
 Download
 --------
 
