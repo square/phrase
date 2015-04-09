@@ -15,11 +15,13 @@
  */
 package com.squareup.phrase;
 
+import android.support.annotation.NonNull;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.res.Resources;
 import android.text.SpannableStringBuilder;
 import android.view.View;
+import android.widget.TextView;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -180,6 +182,14 @@ public final class Phrase {
       formatted = sb;
     }
     return formatted;
+  }
+
+  /** Apply the phrase to the target. */
+  public void into(@NonNull TextView target){
+    if (target == null) {
+      throw new IllegalArgumentException("Target must not be null.");
+    }
+    target.setText(format());
   }
 
   /**
