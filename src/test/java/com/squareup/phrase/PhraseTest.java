@@ -15,10 +15,15 @@
  */
 package com.squareup.phrase;
 
+import android.content.Context;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.widget.TextView;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
@@ -29,6 +34,8 @@ import static org.fest.assertions.api.Assertions.fail;
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class PhraseTest {
+
+  @Rule public ExpectedException thrown = ExpectedException.none();
 
   @Test public void emptyStringFormatsToItself() {
     assertThat(from("").format().toString()).isEqualTo("");
@@ -165,5 +172,21 @@ public class PhraseTest {
         "Abe").put("age", 20).format();
     assertThat(formatted.toString()).isEqualTo("Hello Abe, you are 20 years old.");
     assertThat(formatted).isInstanceOf(Spannable.class);
+  }
+
+  @Test public void intoSetsTargetText() {
+    Context context = Robolectric.application;
+    TextView textView = new TextView(context);
+
+    Phrase.from("Hello {user}!").put("user", "Eric").into(textView);
+    CharSequence actual = textView.getText().toString();
+
+    assertThat(actual.toString()).isEqualTo("Hello Eric!");
+  }
+
+  @Test public void intoNullFailsFast() {
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("Target must not be null.");
+    Phrase.from("Hello {user}!").put("user", "Eric").into(null);
   }
 }
