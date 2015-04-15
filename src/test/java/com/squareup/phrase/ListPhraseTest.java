@@ -17,6 +17,8 @@ package com.squareup.phrase;
 
 import com.squareup.phrase.ListPhrase.Formatter;
 import edu.emory.mathcs.backport.java.util.Collections;
+import java.util.AbstractList;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -155,5 +157,24 @@ public class ListPhraseTest {
     };
 
     assertThat(listPhrase.join(asList(1, 2, 3), formatter)).isEqualTo("0x1, 0x2, and 0x3");
+  }
+
+  @Test public void joinReallyLongListDoesntOverflowStack() {
+    List<Integer> longList = new AbstractList<Integer>() {
+      @Override public Integer get(int location) {
+        return location;
+      }
+
+      @Override public int size() {
+        return 999_999;
+      }
+    };
+
+    listPhrase.join(longList, new Formatter<Integer>() {
+      @Override public CharSequence format(Integer item) {
+        // Do as little as possible.
+        return "a";
+      }
+    });
   }
 }
