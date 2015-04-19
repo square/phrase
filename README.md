@@ -1,6 +1,8 @@
 Phrase - Android string formatting
 ==================================
 
+[![license](http://img.shields.io/badge/license-apache_2.0-red.svg?style=flat)](https://raw.githubusercontent.com/square/phrase/master/LICENSE.txt) [![maven](https://img.shields.io/maven-central/v/com.squareup.phrase/phrase.svg)](http://maven-repository.com/artifact/com.squareup.phrase) [![build](https://img.shields.io/travis/square/phrase.svg?style=flat)](https://travis-ci.org/square/phrase)
+
 ```java
 CharSequence formatted = Phrase.from("Hi {first_name}, you are {age} years old.")
   .put("first_name", firstName)
