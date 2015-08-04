@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.text.SpannableStringBuilder;
 import android.view.View;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -41,7 +42,6 @@ import java.util.Set;
  * </ul>
  * The constructor parses the original pattern into a doubly-linked list of {@link Token}s.
  * These tokens do not modify the original pattern, thus preserving any spans.
- * <p/>
  * The {@link #format()} method iterates over the tokens, replacing text as it iterates. The
  * doubly-linked list allows each token to ask its predecessor for the expanded length.
  */
@@ -215,7 +215,7 @@ public final class Phrase {
       char nextChar = lookahead();
       if (nextChar == '{') {
         return leftCurlyBracket(prev);
-      } else if (nextChar >= 'a' && nextChar <= 'z') {
+      } else if (isValidKeyChar(nextChar)) {
         return key(prev);
       } else {
         throw new IllegalArgumentException(
@@ -233,7 +233,7 @@ public final class Phrase {
 
     // Consume the opening '{'.
     consume();
-    while ((curChar >= 'a' && curChar <= 'z') || curChar == '_') {
+    while (isValidKeyChar(curChar)) {
       sb.append(curChar);
       consume();
     }
@@ -274,6 +274,11 @@ public final class Phrase {
   /** Returns the next character in the input pattern without advancing. */
   private char lookahead() {
     return curCharIndex < pattern.length() - 1 ? pattern.charAt(curCharIndex + 1) : EOF;
+  }
+
+  /** Says if a character is valid for a key, acceptable is [a-zA-Z0-9_] **/
+  private boolean isValidKeyChar(char character) {
+    return (character >= 'a' && character <= 'z') || (character >= 'A' && character <= 'Z') || (character >='0' && character <= '9') || character == '_';
   }
 
   /**
