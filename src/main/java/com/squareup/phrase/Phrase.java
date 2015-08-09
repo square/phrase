@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.text.SpannableStringBuilder;
 import android.view.View;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -40,10 +39,12 @@ import java.util.Set;
  * <li>Spans are preserved, such as simple HTML tags found in strings.xml.</li>
  * <li>Fails fast on any mismatched keys.</li>
  * </ul>
+ * <p>
  * The constructor parses the original pattern into a doubly-linked list of {@link Token}s.
  * These tokens do not modify the original pattern, thus preserving any spans.
  * The {@link #format()} method iterates over the tokens, replacing text as it iterates. The
  * doubly-linked list allows each token to ask its predecessor for the expanded length.
+ * </p>
  */
 public final class Phrase {
 
@@ -215,7 +216,7 @@ public final class Phrase {
       char nextChar = lookahead();
       if (nextChar == '{') {
         return leftCurlyBracket(prev);
-      } else if (isValidKeyChar(nextChar)) {
+      } else if (isValidKeyStart(nextChar)) {
         return key(prev);
       } else {
         throw new IllegalArgumentException(
@@ -276,9 +277,14 @@ public final class Phrase {
     return curCharIndex < pattern.length() - 1 ? pattern.charAt(curCharIndex + 1) : EOF;
   }
 
-  /** Says if a character is valid for a key, acceptable is [a-zA-Z0-9_] **/
+  /** Keys are not allowed to start with underscore, but may contain them in their key. Validates [a-zA-Z0-9] */
+  private boolean isValidKeyStart(char character) {
+    return (character >= 'a' && character <= 'z') || (character >= 'A' && character <= 'Z') || (character >='0' && character <= '9');
+  }
+
+  /** Says if a character is valid for a key, acceptable is [a-zA-Z0-9_]  **/
   private boolean isValidKeyChar(char character) {
-    return (character >= 'a' && character <= 'z') || (character >= 'A' && character <= 'Z') || (character >='0' && character <= '9') || character == '_';
+    return isValidKeyStart(character) || character == '_';
   }
 
   /**

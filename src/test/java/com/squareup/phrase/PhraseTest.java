@@ -137,7 +137,7 @@ public class PhraseTest {
 
   @Test public void illegalTokenCharactersFailFast() {
     try {
-      from("blah {NoUppercaseAllowed}");
+      from("blah {*wehatestars*}");
       fail("Expected IllegalArgumentException");
     } catch (IllegalArgumentException e) {
     }
