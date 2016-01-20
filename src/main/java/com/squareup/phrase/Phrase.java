@@ -132,16 +132,13 @@ public final class Phrase {
     return this;
   }
 
-  /** @see #put(String, CharSequence) */
+  /**
+   * Replaces the given key with the {@link Integer#toString(int)} value for the given int.
+   *
+   * @see #put(String, CharSequence)
+   */
   public Phrase put(String key, int value) {
-    if (!keys.contains(key)) {
-      throw new IllegalArgumentException("Invalid key: " + key);
-    }
-    keysToValues.put(key, Integer.toString(value));
-
-    // Invalidate the cached formatted text.
-    formatted = null;
-    return this;
+    return put(key, Integer.toString(value));
   }
 
   /**
@@ -153,7 +150,12 @@ public final class Phrase {
     return keys.contains(key) ? put(key, value) : this;
   }
 
-  /** @see #put(String, CharSequence) */
+  /**
+   * Replaces the given key, if it exists, with the {@link Integer#toString(int)} value
+   * for the given int.
+   *
+   * @see #putOptional(String, CharSequence)
+   */
   public Phrase putOptional(String key, int value) {
     return keys.contains(key) ? put(key, value) : this;
   }
