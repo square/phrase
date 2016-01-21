@@ -18,6 +18,7 @@ package com.squareup.phrase;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.annotation.StringRes;
 import android.text.SpannableStringBuilder;
 import android.view.View;
 import java.util.HashMap;
@@ -72,7 +73,7 @@ public final class Phrase {
    *
    * @throws IllegalArgumentException if pattern contains any syntax errors.
    */
-  public static Phrase from(Fragment f, int patternResourceId) {
+  public static Phrase from(Fragment f, @StringRes int patternResourceId) {
     return from(f.getResources(), patternResourceId);
   }
 
@@ -81,7 +82,7 @@ public final class Phrase {
    *
    * @throws IllegalArgumentException if pattern contains any syntax errors.
    */
-  public static Phrase from(View v, int patternResourceId) {
+  public static Phrase from(View v, @StringRes int patternResourceId) {
     return from(v.getResources(), patternResourceId);
   }
 
@@ -90,7 +91,7 @@ public final class Phrase {
    *
    * @throws IllegalArgumentException if pattern contains any syntax errors.
    */
-  public static Phrase from(Context c, int patternResourceId) {
+  public static Phrase from(Context c, @StringRes int patternResourceId) {
     return from(c.getResources(), patternResourceId);
   }
 
@@ -99,7 +100,7 @@ public final class Phrase {
    *
    * @throws IllegalArgumentException if pattern contains any syntax errors.
    */
-  public static Phrase from(Resources r, int patternResourceId) {
+  public static Phrase from(Resources r, @StringRes int patternResourceId) {
     return from(r.getText(patternResourceId));
   }
 
