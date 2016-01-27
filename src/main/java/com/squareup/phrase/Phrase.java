@@ -40,11 +40,12 @@ import java.util.Set;
  * <li>Spans are preserved, such as simple HTML tags found in strings.xml.</li>
  * <li>Fails fast on any mismatched keys.</li>
  * </ul>
+ * <p>
  * The constructor parses the original pattern into a doubly-linked list of {@link Token}s.
  * These tokens do not modify the original pattern, thus preserving any spans.
- * <p/>
  * The {@link #format()} method iterates over the tokens, replacing text as it iterates. The
  * doubly-linked list allows each token to ask its predecessor for the expanded length.
+ * </p>
  */
 public final class Phrase {
 
@@ -218,7 +219,7 @@ public final class Phrase {
       char nextChar = lookahead();
       if (nextChar == '{') {
         return leftCurlyBracket(prev);
-      } else if (nextChar >= 'a' && nextChar <= 'z') {
+      } else if (isValidKeyStart(nextChar)) {
         return key(prev);
       } else {
         throw new IllegalArgumentException(
@@ -236,7 +237,7 @@ public final class Phrase {
 
     // Consume the opening '{'.
     consume();
-    while ((curChar >= 'a' && curChar <= 'z') || curChar == '_') {
+    while (isValidKeyChar(curChar)) {
       sb.append(curChar);
       consume();
     }
@@ -277,6 +278,16 @@ public final class Phrase {
   /** Returns the next character in the input pattern without advancing. */
   private char lookahead() {
     return curCharIndex < pattern.length() - 1 ? pattern.charAt(curCharIndex + 1) : EOF;
+  }
+
+  /** Keys are not allowed to start with underscore, but may contain them in their key. Validates [a-zA-Z0-9] */
+  private boolean isValidKeyStart(char character) {
+    return (character >= 'a' && character <= 'z') || (character >= 'A' && character <= 'Z') || (character >='0' && character <= '9');
+  }
+
+  /** Says if a character is valid for a key, acceptable is [a-zA-Z0-9_]  **/
+  private boolean isValidKeyChar(char character) {
+    return isValidKeyStart(character) || character == '_';
   }
 
   /**
