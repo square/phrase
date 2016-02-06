@@ -16,9 +16,6 @@
 package com.squareup.phrase;
 
 import com.squareup.phrase.ListPhrase.Formatter;
-import edu.emory.mathcs.backport.java.util.Collections;
-import java.util.AbstractList;
-import java.util.List;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -26,6 +23,10 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
+
+import java.util.AbstractList;
+import java.util.Collections;
+import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.fest.assertions.api.Assertions.assertThat;
