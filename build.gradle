@@ -5,8 +5,7 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath 'com.android.tools.build:gradle:1.0.0'
-    classpath 'com.github.jcandksolutions.gradle:android-unit-test:2.1.1'
+    classpath 'com.android.tools.build:gradle:1.5.0'
   }
 }
 dependencies {
@@ -35,8 +34,6 @@ android {
     targetCompatibility JavaVersion.VERSION_1_7
   }
 }
-
-apply plugin: 'android-unit-test'
 
 dependencies {
   compile 'com.android.support:support-annotations:21.0.3'
