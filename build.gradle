@@ -5,8 +5,7 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath 'com.android.tools.build:gradle:1.0.0'
-    classpath 'com.github.jcandksolutions.gradle:android-unit-test:2.1.1'
+    classpath 'com.android.tools.build:gradle:1.5.0'
   }
 }
 dependencies {
@@ -22,8 +21,8 @@ apply plugin: 'com.android.library'
 apply plugin: 'maven'
 
 android {
-  compileSdkVersion 21
-  buildToolsVersion '21.1.2'
+  compileSdkVersion 23
+  buildToolsVersion '23.0.2'
 
   defaultConfig {
     minSdkVersion 11
@@ -36,15 +35,13 @@ android {
   }
 }
 
-apply plugin: 'android-unit-test'
-
 dependencies {
-  compile 'com.android.support:support-annotations:21.0.3'
+  compile 'com.android.support:support-annotations:23.1.1'
 
-  testCompile 'junit:junit:4.10'
-  testCompile 'org.mockito:mockito-core:1.9.5'
+  testCompile 'junit:junit:4.12'
+  testCompile 'org.mockito:mockito-core:1.10.19'
   testCompile 'org.easytesting:fest-assert-core:2.0M10'
-  testCompile 'org.robolectric:robolectric:2.3'
+  testCompile 'org.robolectric:robolectric:3.0'
 }
 
 android.libraryVariants.all { variant ->
