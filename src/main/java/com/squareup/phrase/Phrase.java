@@ -22,6 +22,7 @@ import android.support.annotation.PluralsRes;
 import android.support.annotation.StringRes;
 import android.text.SpannableStringBuilder;
 import android.view.View;
+import android.widget.TextView;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -211,6 +212,14 @@ public final class Phrase {
       formatted = sb;
     }
     return formatted;
+  }
+
+  /** "Formats and sets as text in textView." */
+  public void into(TextView textView) {
+    if (textView == null) {
+      throw new IllegalArgumentException("TextView must not be null.");
+    }
+    textView.setText(format());
   }
 
   /**

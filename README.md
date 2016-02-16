@@ -10,6 +10,14 @@ CharSequence formatted = Phrase.from("Hi {first_name}, you are {age} years old."
   .format();
 ```
 
+Send your phrase straight into a TextView:
+
+```java
+Phrase.from("Welcome back {user}.")
+  .put("user", name)
+  .into(textView);
+```
+
 Comma-separated lists:
 ```
 CharSequence formattedList = ListPhrase.from(", ")
