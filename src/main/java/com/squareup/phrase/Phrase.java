@@ -18,6 +18,7 @@ package com.squareup.phrase;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.annotation.PluralsRes;
 import android.support.annotation.StringRes;
 import android.text.SpannableStringBuilder;
 import android.view.View;
@@ -102,6 +103,33 @@ public final class Phrase {
    */
   public static Phrase from(Resources r, @StringRes int patternResourceId) {
     return from(r.getText(patternResourceId));
+  }
+
+  /**
+   * Entry point into this API.
+   *
+   * @throws IllegalArgumentException if pattern contains any syntax errors.
+   */
+  public static Phrase fromPlural(View v, @PluralsRes int patternResourceId, int quantity) {
+    return fromPlural(v.getResources(), patternResourceId, quantity);
+  }
+
+  /**
+   * Entry point into this API.
+   *
+   * @throws IllegalArgumentException if pattern contains any syntax errors.
+   */
+  public static Phrase fromPlural(Context c, @PluralsRes int patternResourceId, int quantity) {
+    return fromPlural(c.getResources(), patternResourceId, quantity);
+  }
+
+  /**
+   * Entry point into this API.
+   *
+   * @throws IllegalArgumentException if pattern contains any syntax errors.
+   */
+  public static Phrase fromPlural(Resources r, @PluralsRes int patternResourceId, int quantity) {
+    return from(r.getQuantityText(patternResourceId, quantity));
   }
 
   /**
