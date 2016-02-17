@@ -19,12 +19,13 @@ import android.content.Context;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.widget.TextView;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import static com.squareup.phrase.Phrase.from;
@@ -175,7 +176,7 @@ public class PhraseTest {
   }
 
   @Test public void intoSetsTargetText() {
-    Context context = Robolectric.application;
+    Context context = RuntimeEnvironment.application;
     TextView textView = new TextView(context);
 
     Phrase.from("Hello {user}!").put("user", "Eric").into(textView);
@@ -186,7 +187,7 @@ public class PhraseTest {
 
   @Test public void intoNullFailsFast() {
     thrown.expect(IllegalArgumentException.class);
-    thrown.expectMessage("Target must not be null.");
+    thrown.expectMessage("TextView must not be null.");
     Phrase.from("Hello {user}!").put("user", "Eric").into(null);
   }
 }
