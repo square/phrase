@@ -44,7 +44,7 @@ import java.util.Set;
  * </ul>
  * The constructor parses the original pattern into a doubly-linked list of {@link Token}s.
  * These tokens do not modify the original pattern, thus preserving any spans.
- * <p/>
+ * <p>
  * The {@link #format()} method iterates over the tokens, replacing text as it iterates. The
  * doubly-linked list allows each token to ask its predecessor for the expanded length.
  */
