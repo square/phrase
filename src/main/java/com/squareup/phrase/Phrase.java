@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.PluralsRes;
 import android.support.annotation.StringRes;
+import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.view.View;
 import android.widget.TextView;
@@ -54,8 +55,8 @@ public final class Phrase {
   private final CharSequence pattern;
 
   /** All keys parsed from the original pattern, sans braces. */
-  private final Set<String> keys = new HashSet<String>();
-  private final Map<String, CharSequence> keysToValues = new HashMap<String, CharSequence>();
+  private final Set<String> keys = new HashSet<>();
+  private final Map<String, CharSequence> keysToValues = new HashMap<>();
 
   /** Cached result after replacing all keys with corresponding values. */
   private CharSequence formatted;
@@ -67,6 +68,8 @@ public final class Phrase {
   private char curChar;
   private int curCharIndex;
 
+  private boolean spanSupportedEnabled = true;
+
   /** Indicates parsing is complete. */
   private static final int EOF = 0;
 
@@ -75,6 +78,7 @@ public final class Phrase {
    *
    * @throws IllegalArgumentException if pattern contains any syntax errors.
    */
+  @SuppressWarnings("UnusedDeclaration") // Public API.
   public static Phrase from(Fragment f, @StringRes int patternResourceId) {
     return from(f.getResources(), patternResourceId);
   }
@@ -84,6 +88,7 @@ public final class Phrase {
    *
    * @throws IllegalArgumentException if pattern contains any syntax errors.
    */
+  @SuppressWarnings("UnusedDeclaration") // Public API.
   public static Phrase from(View v, @StringRes int patternResourceId) {
     return from(v.getResources(), patternResourceId);
   }
@@ -93,6 +98,7 @@ public final class Phrase {
    *
    * @throws IllegalArgumentException if pattern contains any syntax errors.
    */
+  @SuppressWarnings("UnusedDeclaration") // Public API.
   public static Phrase from(Context c, @StringRes int patternResourceId) {
     return from(c.getResources(), patternResourceId);
   }
@@ -102,6 +108,7 @@ public final class Phrase {
    *
    * @throws IllegalArgumentException if pattern contains any syntax errors.
    */
+  @SuppressWarnings("UnusedDeclaration") // Public API.
   public static Phrase from(Resources r, @StringRes int patternResourceId) {
     return from(r.getText(patternResourceId));
   }
@@ -111,6 +118,7 @@ public final class Phrase {
    *
    * @throws IllegalArgumentException if pattern contains any syntax errors.
    */
+  @SuppressWarnings("UnusedDeclaration") // Public API.
   public static Phrase fromPlural(View v, @PluralsRes int patternResourceId, int quantity) {
     return fromPlural(v.getResources(), patternResourceId, quantity);
   }
@@ -120,6 +128,7 @@ public final class Phrase {
    *
    * @throws IllegalArgumentException if pattern contains any syntax errors.
    */
+  @SuppressWarnings("UnusedDeclaration") // Public API.
   public static Phrase fromPlural(Context c, @PluralsRes int patternResourceId, int quantity) {
     return fromPlural(c.getResources(), patternResourceId, quantity);
   }
@@ -129,6 +138,7 @@ public final class Phrase {
    *
    * @throws IllegalArgumentException if pattern contains any syntax errors.
    */
+  @SuppressWarnings("UnusedDeclaration") // Public API.
   public static Phrase fromPlural(Resources r, @PluralsRes int patternResourceId, int quantity) {
     return from(r.getQuantityText(patternResourceId, quantity));
   }
@@ -138,6 +148,7 @@ public final class Phrase {
    *
    * @throws IllegalArgumentException if pattern contains any syntax errors.
    */
+  @SuppressWarnings("UnusedDeclaration") // Public API.
   public static Phrase from(CharSequence pattern) {
     return new Phrase(pattern);
   }
@@ -148,6 +159,7 @@ public final class Phrase {
    *
    * @throws IllegalArgumentException if the key is not in the pattern.
    */
+  @SuppressWarnings("UnusedDeclaration") // Public API.
   public Phrase put(String key, CharSequence value) {
     if (!keys.contains(key)) {
       throw new IllegalArgumentException("Invalid key: " + key);
@@ -167,6 +179,7 @@ public final class Phrase {
    *
    * @see #put(String, CharSequence)
    */
+  @SuppressWarnings("UnusedDeclaration") // Public API.
   public Phrase put(String key, int value) {
     return put(key, Integer.toString(value));
   }
@@ -176,6 +189,7 @@ public final class Phrase {
    *
    * @see #put(String, CharSequence)
    */
+  @SuppressWarnings("UnusedDeclaration") // Public API.
   public Phrase putOptional(String key, CharSequence value) {
     return keys.contains(key) ? put(key, value) : this;
   }
@@ -186,6 +200,7 @@ public final class Phrase {
    *
    * @see #putOptional(String, CharSequence)
    */
+  @SuppressWarnings("UnusedDeclaration") // Public API.
   public Phrase putOptional(String key, int value) {
     return keys.contains(key) ? put(key, value) : this;
   }
@@ -195,16 +210,17 @@ public final class Phrase {
    *
    * @throws IllegalArgumentException if any keys are not replaced.
    */
+  @SuppressWarnings("UnusedDeclaration") // Public API.
   public CharSequence format() {
     if (formatted == null) {
       if (!keysToValues.keySet().containsAll(keys)) {
-        Set<String> missingKeys = new HashSet<String>(keys);
+        Set<String> missingKeys = new HashSet<>(keys);
         missingKeys.removeAll(keysToValues.keySet());
         throw new IllegalArgumentException("Missing keys: " + missingKeys);
       }
 
       // Copy the original pattern to preserve all spans, such as bold, italic, etc.
-      SpannableStringBuilder sb = new SpannableStringBuilder(pattern);
+      Editable sb = createEditable(pattern);
       for (Token t = head; t != null; t = t.next) {
         t.expand(sb, keysToValues);
       }
@@ -212,6 +228,16 @@ public final class Phrase {
       formatted = sb;
     }
     return formatted;
+  }
+
+  /**
+   * This can be useful for unit tests that don't want to use {@link SpannableStringBuilder}
+   * which can cause a stub exception or be no-op.
+   * Default is <code>true</code>.
+   */
+  @SuppressWarnings("UnusedDeclaration") // Public API.
+  public void setSpanSupportEnabled(boolean spanSupportedEnabled) {
+    this.spanSupportedEnabled = spanSupportedEnabled;
   }
 
   /** "Formats and sets as text in textView." */
@@ -228,6 +254,13 @@ public final class Phrase {
    */
   @Override public String toString() {
     return pattern.toString();
+  }
+
+  private Editable createEditable(CharSequence pattern) {
+    if (spanSupportedEnabled) {
+      return new SpannableStringBuilder(pattern);
+    }
+    return new SimpleEditable(pattern);
   }
 
   private Phrase(CharSequence pattern) {
@@ -336,7 +369,7 @@ public final class Phrase {
     }
 
     /** Replace text in {@code target} with this token's associated value. */
-    abstract void expand(SpannableStringBuilder target, Map<String, CharSequence> data);
+    abstract void expand(Editable target, Map<String, CharSequence> data);
 
     /** Returns the number of characters after expansion. */
     abstract int getFormattedLength();
@@ -362,7 +395,7 @@ public final class Phrase {
       this.textLength = textLength;
     }
 
-    @Override void expand(SpannableStringBuilder target, Map<String, CharSequence> data) {
+    @Override void expand(Editable target, Map<String, CharSequence> data) {
       // Don't alter spans in the target.
     }
 
@@ -377,7 +410,7 @@ public final class Phrase {
       super(prev);
     }
 
-    @Override void expand(SpannableStringBuilder target, Map<String, CharSequence> data) {
+    @Override void expand(Editable target, Map<String, CharSequence> data) {
       int start = getFormattedStart();
       target.replace(start, start + 2, "{");
     }
@@ -399,7 +432,7 @@ public final class Phrase {
       this.key = key;
     }
 
-    @Override void expand(SpannableStringBuilder target, Map<String, CharSequence> data) {
+    @Override void expand(Editable target, Map<String, CharSequence> data) {
       value = data.get(key);
 
       int replaceFrom = getFormattedStart();
