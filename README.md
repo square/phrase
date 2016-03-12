@@ -21,7 +21,7 @@ Phrase.from("Welcome back {user}.")
 Comma-separated lists:
 ```
 CharSequence formattedList = ListPhrase.from(", ")
-  .format(1, 2, 3);
+  .join(1, 2, 3);
 // returns "1, 2, 3"
 ```
 
@@ -32,10 +32,10 @@ ListPhrase listFormatter = ListPhrase.from(
   ", ",
   ", and ");
 
-listFormatter.format(Arrays.asList(1, 2));
+listFormatter.join(Arrays.asList(1, 2));
 // returns "1 and 2"
 
-listFormatter.format(Arrays.asList(1, 2, 3));
+listFormatter.join(Arrays.asList(1, 2, 3));
 // returns "1, 2, and 3"
 ```
 
