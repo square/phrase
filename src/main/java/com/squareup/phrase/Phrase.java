@@ -21,6 +21,7 @@ import android.content.res.Resources;
 import android.support.annotation.PluralsRes;
 import android.support.annotation.StringRes;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.view.View;
 import android.widget.TextView;
 import java.util.HashMap;
@@ -56,6 +57,7 @@ public final class Phrase {
   /** All keys parsed from the original pattern, sans braces. */
   private final Set<String> keys = new HashSet<String>();
   private final Map<String, CharSequence> keysToValues = new HashMap<String, CharSequence>();
+  private final Map<String, Object> keysToSpans = new HashMap<String, Object>();
 
   /** Cached result after replacing all keys with corresponding values. */
   private CharSequence formatted;
@@ -191,6 +193,34 @@ public final class Phrase {
   }
 
   /**
+   * Adds span data for the given key.
+   *
+   * @throws IllegalArgumentException if the key is not in the pattern.
+   */
+  public Phrase putSpan(String key, Object span) {
+    if (!keys.contains(key)) {
+      throw new IllegalArgumentException("Invalid key: " + key);
+    }
+    if (span == null) {
+      throw new IllegalArgumentException("Null span for '" + key + "'");
+    }
+    keysToSpans.put(key, span);
+
+    // Invalidate the cached formatted text.
+    formatted = null;
+    return this;
+  }
+
+  /**
+   * Silently ignored if the key is not in the pattern.
+   *
+   * @see #putSpan(String, Object)
+   */
+  public Phrase putOptionalSpan(String key, Object span) {
+    return keys.contains(key) ? putSpan(key, span) : this;
+  }
+
+  /**
    * Returns the text after replacing all keys with values.
    *
    * @throws IllegalArgumentException if any keys are not replaced.
@@ -206,7 +236,7 @@ public final class Phrase {
       // Copy the original pattern to preserve all spans, such as bold, italic, etc.
       SpannableStringBuilder sb = new SpannableStringBuilder(pattern);
       for (Token t = head; t != null; t = t.next) {
-        t.expand(sb, keysToValues);
+        t.expand(sb, keysToValues, keysToSpans);
       }
 
       formatted = sb;
@@ -335,7 +365,7 @@ public final class Phrase {
     }
 
     /** Replace text in {@code target} with this token's associated value. */
-    abstract void expand(SpannableStringBuilder target, Map<String, CharSequence> data);
+    abstract void expand(SpannableStringBuilder target, Map<String, CharSequence> data, Map<String, Object> spans);
 
     /** Returns the number of characters after expansion. */
     abstract int getFormattedLength();
@@ -361,7 +391,7 @@ public final class Phrase {
       this.textLength = textLength;
     }
 
-    @Override void expand(SpannableStringBuilder target, Map<String, CharSequence> data) {
+    @Override void expand(SpannableStringBuilder target, Map<String, CharSequence> data, Map<String, Object> spans) {
       // Don't alter spans in the target.
     }
 
@@ -376,7 +406,7 @@ public final class Phrase {
       super(prev);
     }
 
-    @Override void expand(SpannableStringBuilder target, Map<String, CharSequence> data) {
+    @Override void expand(SpannableStringBuilder target, Map<String, CharSequence> data, Map<String, Object> spans) {
       int start = getFormattedStart();
       target.replace(start, start + 2, "{");
     }
@@ -398,13 +428,17 @@ public final class Phrase {
       this.key = key;
     }
 
-    @Override void expand(SpannableStringBuilder target, Map<String, CharSequence> data) {
+    @Override void expand(SpannableStringBuilder target, Map<String, CharSequence> data, Map<String, Object> spans) {
       value = data.get(key);
 
       int replaceFrom = getFormattedStart();
       // Add 2 to account for the opening and closing brackets.
       int replaceTo = replaceFrom + key.length() + 2;
       target.replace(replaceFrom, replaceTo, value);
+      Object span = spans.get(key);
+      if (span != null) {
+        target.setSpan(span, replaceFrom, replaceFrom + getFormattedLength(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+      }
     }
 
     @Override int getFormattedLength() {
