@@ -16,8 +16,11 @@
 package com.squareup.phrase;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.SpannedString;
+import android.text.style.StyleSpan;
 import android.widget.TextView;
 
 import org.junit.Rule;
@@ -183,6 +186,20 @@ public class PhraseTest {
     CharSequence actual = textView.getText().toString();
 
     assertThat(actual.toString()).isEqualTo("Hello Eric!");
+  }
+
+  @Test public void styleIsAppliedToCorrectSpan() {
+    Context context = RuntimeEnvironment.application;
+    TextView textView = new TextView(context);
+    StyleSpan span = new StyleSpan(Typeface.ITALIC);
+
+    Phrase.from("Hello {user}!").put("user", "Mo").putSpan("user", span).into(textView);
+    CharSequence actual = textView.getText();
+    SpannedString spanned = (SpannedString) actual;
+
+    assertThat(actual.toString()).isEqualTo("Hello Mo!");
+    assertThat(spanned.getSpanStart(span)).isEqualTo(6);
+    assertThat(spanned.getSpanEnd(span)).isEqualTo(8);
   }
 
   @Test public void intoNullFailsFast() {
