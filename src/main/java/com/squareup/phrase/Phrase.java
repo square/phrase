@@ -278,6 +278,11 @@ public final class Phrase {
       consume();
     }
 
+    // Disallow uppercase
+    if ((curChar >= 'A' && curChar <= 'Z')) {
+      throw new IllegalArgumentException("Uppercase Not Allowed: '" + curChar + "'");
+    }
+
     // Consume the closing '}'.
     if (curChar != '}') {
       throw new IllegalArgumentException("Missing closing brace: }");
