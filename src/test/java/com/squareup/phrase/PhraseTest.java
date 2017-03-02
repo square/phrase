@@ -116,6 +116,14 @@ public class PhraseTest {
         .isEqualTo("Hello Eric");
   }
 
+  @Test public void putFailUppercaseNotAllowed() {
+    try{
+      from("Hello {Name}").putOptional("Name", "Eric").format().toString();
+      fail("Expected IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+    }
+  }
+
   private Phrase gender = from("{gender}");
 
   @Test
