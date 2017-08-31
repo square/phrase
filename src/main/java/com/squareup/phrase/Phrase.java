@@ -255,7 +255,7 @@ public final class Phrase {
       char nextChar = lookahead();
       if (nextChar == '{') {
         return leftCurlyBracket(prev);
-      } else if (nextChar >= 'a' && nextChar <= 'z') {
+      } else if ((nextChar >= 'a' && nextChar <= 'z') || (nextChar >= 'A' && nextChar <= 'Z')) {
         return key(prev);
       } else {
         throw new IllegalArgumentException(
@@ -273,7 +273,7 @@ public final class Phrase {
 
     // Consume the opening '{'.
     consume();
-    while ((curChar >= 'a' && curChar <= 'z') || curChar == '_') {
+    while ((curChar >= 'a' && curChar <= 'z') || (curChar >= 'A' && curChar <= 'Z') || curChar == '_') {
       sb.append(curChar);
       consume();
     }
