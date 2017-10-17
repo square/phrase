@@ -116,6 +116,16 @@ public class PhraseTest {
         .isEqualTo("Hello Eric");
   }
 
+  @Test public void putFailUppercaseNotAllowedMiddle() {
+    try{
+      from("Hello {aName}").putOptional("Name", "Eric").format();
+      fail("Expected IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+      assertThat(e.getMessage()) //
+          .isEqualTo("Unexpected character 'N'; expecting lower case a-z, '_', or '}'");
+    }
+  }
+
   private Phrase gender = from("{gender}");
 
   @Test
@@ -143,11 +153,12 @@ public class PhraseTest {
     }
   }
 
-  @Test public void illegalTokenCharactersFailFast() {
+  @Test public void illegalStartOfTokenCharactersFailFast() {
     try {
       from("blah {NoUppercaseAllowed}");
       fail("Expected IllegalArgumentException");
     } catch (IllegalArgumentException e) {
+      assertThat(e.getMessage()).isEqualTo("Unexpected first character 'N'; must be lower case a-z.");
     }
   }
 

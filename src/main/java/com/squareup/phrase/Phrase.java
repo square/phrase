@@ -259,7 +259,7 @@ public final class Phrase {
         return key(prev);
       } else {
         throw new IllegalArgumentException(
-            "Unexpected character '" + nextChar + "'; expected key.");
+            "Unexpected first character '" + nextChar + "'; must be lower case a-z.");
       }
     }
     return text(prev);
@@ -280,7 +280,8 @@ public final class Phrase {
 
     // Consume the closing '}'.
     if (curChar != '}') {
-      throw new IllegalArgumentException("Missing closing brace: }");
+      throw new IllegalArgumentException("Unexpected character '" + curChar
+          + "'; expecting lower case a-z, '_', or '}'");
     }
     consume();
 
