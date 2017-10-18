@@ -10,9 +10,9 @@ android:
   licenses:
     - android-sdk-license-5be876d5
     - android-sdk-license-c81a61d9
+    - android-sdk-license-2742d1c5
 
 jdk:
-  - oraclejdk7
   - oraclejdk8
 
 script:
