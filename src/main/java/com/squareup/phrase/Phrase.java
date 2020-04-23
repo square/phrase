@@ -18,8 +18,6 @@ package com.squareup.phrase;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.res.Resources;
-import android.support.annotation.PluralsRes;
-import android.support.annotation.StringRes;
 import android.text.SpannableStringBuilder;
 import android.view.View;
 import android.widget.TextView;
@@ -27,6 +25,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import androidx.annotation.PluralsRes;
+import androidx.annotation.StringRes;
 
 /**
  * A fluent API for formatting Strings. Canonical usage:
