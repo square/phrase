@@ -15,13 +15,13 @@
  */
 package com.squareup.phrase;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import java.util.AbstractList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 /**
  * Formats a list in a size-dependent way. List separators define how to separate two elements of
  * the list. You can define 3 different separators:

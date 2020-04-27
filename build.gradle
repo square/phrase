@@ -3,6 +3,10 @@ import com.android.builder.core.BuilderConstants;
 buildscript {
   repositories {
     mavenCentral()
+    maven {
+      url 'https://maven.google.com/'
+      name 'Google'
+    }
   }
   dependencies {
     classpath 'com.android.tools.build:gradle:1.5.0'
@@ -36,7 +40,7 @@ android {
 }
 
 dependencies {
-  compile 'com.android.support:support-annotations:23.1.1'
+  compile 'androidx.annotation:annotation:1.1.0'
 
   testCompile 'junit:junit:4.12'
   testCompile 'org.mockito:mockito-core:1.10.19'
@@ -76,6 +80,13 @@ task checkstyle(type: Checkstyle) {
   exclude '**/gen/**'
 
   classpath = files()
+}
+
+repositories {
+  maven {
+    url 'https://maven.google.com/'
+    name 'Google'
+  }
 }
 
 apply from: 'gradle-mvn-push.gradle'
