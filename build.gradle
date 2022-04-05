@@ -8,6 +8,7 @@ buildscript {
   }
   dependencies {
     classpath 'com.android.tools.build:gradle:7.3.0-alpha07'
+    classpath 'com.vanniktech:gradle-maven-publish-plugin:0.18.0'
   }
 }
 dependencies {
@@ -18,6 +19,7 @@ dependencies {
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'com.vanniktech.maven.publish'
 
 android {
   compileSdkVersion 31
@@ -63,4 +65,12 @@ task checkstyle(type: Checkstyle) {
   exclude '**/gen/**'
 
   classpath = files()
+}
+
+allprojects {
+  plugins.withId("com.vanniktech.maven.publish") {
+    mavenPublish {
+      sonatypeHost = "S01"
+    }
+  }
 }
